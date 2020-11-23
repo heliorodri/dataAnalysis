@@ -4,18 +4,12 @@ import com.heliorodri.challenge.datreader.config.AppConfig;
 import com.heliorodri.challenge.datreader.reader.DatProcessor;
 import com.heliorodri.challenge.datreader.utils.Infos;
 import com.heliorodri.challenge.datreader.utils.WriteLog;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.nio.file.*;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 

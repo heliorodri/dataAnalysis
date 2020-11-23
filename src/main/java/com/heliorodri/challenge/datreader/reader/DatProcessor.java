@@ -39,56 +39,88 @@ public class DatProcessor {
     private SalesmanService salesmanService;
 
 
+    public CustomerService getCustomerService() {
+        return customerService;
+    }
+
+    public SaleService getSaleService() {
+        return saleService;
+    }
+
+    public SalesmanService getSalesmanService() {
+        return salesmanService;
+    }
 
     public void analize(String file) {
         this.loadBases(Infos.INPUT_DIR.getValue() + file);
-        this.mountOutFile(file);
+        this.writeFile(this.mountOutFile(file),
+                Infos.OUTPUT_DIR.getValue() + file.replace(".dat", ".done.dat"));
     }
 
-    private void mountOutFile(String file){
+    public String mountOutFile(String file) {
         StringBuilder data = new StringBuilder();
 
         List<Sale> salesLog = salesLog();
 
-        Map<String, Double> map = salesLog.stream()
-                .collect(groupingBy(Sale::getSalesmenName,summingDouble(sale -> sale.getItemPrice()*sale.getItemQuantity())));
+        if (salesLog.size() > 0) {
+
+            Map<String, Double> map = salesLog.stream()
+                    .collect(groupingBy(Sale::getSalesmenName, summingDouble(sale -> sale.getItemPrice() * sale.getItemQuantity())));
 
 
-        map = (Map<String, Double>) map.entrySet()
-                .stream()
-                .sorted(comparingByValue())
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+            map = (Map<String, Double>) map.entrySet()
+                    .stream()
+                    .sorted(comparingByValue())
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
 
-        Sale expensiveSale = Collections
-                .max(this.saleService.getSales(),
-                        Comparator.comparing(
-                                s -> this.saleService.getSales().stream()
-                                    .filter(oSale -> oSale.getSaleId() == s.getSaleId())
-                                    .mapToDouble(Sale::getItemPrice)
-                                    .sum()
-                        )
-                );
+            data.append("Worst salesman ever: ").append(map.entrySet().stream().findFirst().get().getKey()).append("\n");
+        }
 
-        Sale cheapSale = Collections
-                .min(this.saleService.getSales(),
-                        Comparator.comparing(
-                                s -> this.saleService.getSales().stream()
-                                        .filter(oSale -> oSale.getSaleId() == s.getSaleId())
-                                        .mapToDouble(Sale::getItemPrice)
-                                        .sum()
-                        )
-                );
+        if (this.saleService.getSales().size() > 0) {
+            Sale expensiveSale = Collections
+                    .max(this.saleService.getSales(),
+                            Comparator.comparing(
+                                    s -> this.saleService.getSales().stream()
+                                            .filter(oSale -> oSale.getSaleId() == s.getSaleId())
+                                            .mapToDouble(Sale::getItemPrice)
+                                            .sum()
+                            )
+                    );
 
-        data.append("Ammount of salesmen: ").append(this.salesmanService.getSalesmen().size()).append("\n")
-                .append("Ammount of customers: ").append(this.customerService.getCustomers().size()).append("\n")
-                .append("Most expensive sale: ").append("id - ").append(expensiveSale.getSaleId()).append("\n")
-                .append("Cheapest sale: ").append("id - ").append(cheapSale.getSaleId()).append("\n")
-                .append("Worst salesman ever: ").append(map.entrySet().stream().findFirst().get().getKey()).append("\n");
+            data.append("Most expensive sale: ").append("id - ").append(expensiveSale.getSaleId()).append("\n");
 
-        this.writeFile(data.toString(), Infos.OUTPUT_DIR.getValue() + file.replace(".dat", ".done.dat"));
+            Sale cheapSale = Collections
+                    .min(this.saleService.getSales(),
+                            Comparator.comparing(
+                                    s -> this.saleService.getSales().stream()
+                                            .filter(oSale -> oSale.getSaleId() == s.getSaleId())
+                                            .mapToDouble(Sale::getItemPrice)
+                                            .sum()
+                            )
+                    );
+            data.append("Cheapest sale: ").append("id - ").append(cheapSale.getSaleId()).append("\n");
+
+        } else {
+            data.append("empty sales list").append("\n");
+        }
+
+        if (this.customerService.getCustomers().size() == 0) {
+            data.append("empty customers list").append("\n");
+        } else {
+            data.append("Ammount of salesmen: ").append(this.salesmanService.getSalesmen().size()).append("\n");
+        }
+
+        if (this.salesmanService.getSalesmen().size() == 0) {
+            data.append("empty salesmen list").append("\n");
+        } else {
+            data.append("Ammount of customers: ").append(this.customerService.getCustomers().size()).append("\n");
+        }
+
+        return data.toString();
+
     }
 
-    private void loadBases(String file) {
+    public void loadBases(String file) {
         List<List<String>> records = null;
         records = readFile(file);
 
@@ -125,12 +157,12 @@ public class DatProcessor {
                     }
                 }
             }
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             WriteLog.log(e, this.getClass(), "loadBases");
         }
     }
 
-    private List<List<String>> readFile(String file)  {
+    private List<List<String>> readFile(String file) {
         List<List<String>> records = new ArrayList<List<String>>();
 
         try (CSVReader csvReader = createCSVReader(file)) {
@@ -153,7 +185,7 @@ public class DatProcessor {
         return new CSVReaderBuilder(buffer).withCSVParser(parser).build();
     }
 
-    private void writeFile(String data, String fileName) {
+    public void writeFile(String data, String fileName) {
         try {
             Files.write(Paths.get(fileName), data.getBytes());
         } catch (IOException e) {
@@ -161,13 +193,13 @@ public class DatProcessor {
         }
     }
 
-    private List<Sale> salesLog(){
+    public List<Sale> salesLog() {
         Gson g = new Gson();
         ArrayList<Sale> salesLog = new ArrayList<>();
 
         JSONArray jsonArray = WriteSales.getSalesLog();
 
-        for(int i=0; i<jsonArray.size(); i++){
+        for (int i = 0; i < jsonArray.size(); i++) {
             salesLog.add(g.fromJson(jsonArray.get(i).toString(), Sale.class));
         }
 
