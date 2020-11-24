@@ -24,6 +24,10 @@ public class DatReaderApplication {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
         DatProcessor datProcessor = (DatProcessor) applicationContext.getBean("datProcessor");
 
+        datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         Path path = Paths.get(Infos.INPUT_DIR.getValue());
 
         FileSystem fs = path.getFileSystem();

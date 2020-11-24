@@ -19,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -118,6 +119,13 @@ public class DatProcessor {
 
         return data.toString();
 
+    }
+
+    public void checkFolder(String folder){
+        File directory = new File(folder);
+        if (! directory.exists()) {
+            directory.mkdir();
+        }
     }
 
     public void loadBases(String file) {

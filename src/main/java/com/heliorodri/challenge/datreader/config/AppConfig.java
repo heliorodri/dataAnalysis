@@ -17,15 +17,4 @@ public class AppConfig {
     public CustomerConnector customerConnector(){
         return new CustomerConnector();
     }
-/*
-    @Bean
-    public SaleConnector saleConnector(){
-        return new SaleConnector();
-    }
-
-    @Bean
-    public SalesmanConnector salesmanConnector(){
-        return new SalesmanConnector();
-    }*/
-
 }

@@ -1,5 +1,6 @@
 package com.heliorodri.challenge.datreader.reader;
 
+import com.heliorodri.challenge.datreader.utils.Infos;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class DatProcessorTest {
 
     @Test
     public void shouldLoadBasesFromFile() {
+        this.datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        this.datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        this.datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         this.datProcessor.loadBases(file);
 
         assertEquals(2, this.datProcessor.getCustomerService().getCustomers().size());
@@ -43,6 +48,10 @@ public class DatProcessorTest {
 
     @Test
     public void testIfSalesWereCreated(){
+        this.datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        this.datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        this.datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         this.datProcessor.loadBases(file);
 
         assertEquals(1, this.datProcessor.getSaleService().getSales().get(0).getItemId());
@@ -57,6 +66,10 @@ public class DatProcessorTest {
 
     @Test
     public void testIfCustomersWereCreated(){
+        this.datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        this.datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        this.datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         this.datProcessor.loadBases(file);
 
         assertEquals("Jose da Silva", this.datProcessor.getCustomerService().getCustomers().get(0).getName());
@@ -68,6 +81,10 @@ public class DatProcessorTest {
 
     @Test
     public void testIfSalesmenWereCreated(){
+        this.datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        this.datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        this.datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         this.datProcessor.loadBases(file);
 
         assertEquals("1234567891234", this.datProcessor.getSalesmanService().getSalesmen().get(0).getCpf());
@@ -83,10 +100,13 @@ public class DatProcessorTest {
 
     @Test
     public void shouldMontFile(){
+        this.datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        this.datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        this.datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         this.datProcessor.loadBases(file);
 
-        assertEquals("Worst salesman ever: Renato\n" +
-                        "Most expensive sale: id - 1\n" +
+        assertEquals("Most expensive sale: id - 1\n" +
                         "Cheapest sale: id - 2\n" +
                         "Ammount of salesmen: 2\n" +
                         "Ammount of customers: 2\n",
@@ -97,6 +117,10 @@ public class DatProcessorTest {
 
     @Test
     public void shouldMontEmptyFile(){
+        this.datProcessor.checkFolder(Infos.DATA_PATH.getValue());
+        this.datProcessor.checkFolder(Infos.INPUT_DIR.getValue());
+        this.datProcessor.checkFolder(Infos.OUTPUT_DIR.getValue());
+
         this.datProcessor.loadBases(fileEmpty);
 
         assertEquals("empty sales list\n" +
