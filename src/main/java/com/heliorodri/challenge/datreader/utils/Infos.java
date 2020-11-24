@@ -1,8 +1,9 @@
 package com.heliorodri.challenge.datreader.utils;
 
 public enum Infos {
-    INPUT_DIR(System.getProperty("user.dir") + "/data/in/"),
-    OUTPUT_DIR(System.getProperty("user.dir") + "/data/out/"),
+    HOME_PATH(System.clearProperty("user.dir")),
+    INPUT_DIR(HOME_PATH.getValue() + "/data/in/"),
+    OUTPUT_DIR(HOME_PATH.getValue() + "/data/out/"),
     SALESMEN_CODE("001"),
     CUSTOMER_CODE("002"),
     SALE_CODE("003");
